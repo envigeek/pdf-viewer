@@ -3,9 +3,11 @@
 Plugin Name: PDF Viewer
 Plugin URI: http://wordpress.org/plugins/pdf-viewer/
 Description: HTML5-compliant PDF Viewer
-Version: 0.1
+Version: 1.0.1
 Author: Envigeek Web Services
 Author URI: http://www.envigeek.com/
+Requires PHP: 7.0
+Requires at least: 3.8
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,7 +29,7 @@ add_action( 'plugins_loaded', array( 'PDFviewer', 'init' ) );
  
 class PDFviewer
 {
-	const VER = '0.1';
+	const VER = '1.0.1';
 
 	protected $options;
 	
@@ -83,7 +85,6 @@ class PDFviewer
 		$default_options = array(
 			'tx_width' => $default_width.'px',
 			'tx_height' => $default_height.'px',
-			'beta' => 0,
 			'olderIE' => 9,
 			'ta_notice' => '<p>It appears that your browser does not support our web PDF viewer. You can <a href="%%PDF_URL%%">download the PDF</a> to view the document.</p>',
 		);
@@ -144,8 +145,7 @@ class PDFviewer
 			<thead>
 			</thead>
 			<tbody>
-				<tr><td>Stable</td><td>1.1.1</td><td>18 Mar 2015</td></tr>
-				<tr><td>Beta</td><td>1.1.114</td><td>7 May 2015</td></tr>
+				<tr><td>Stable</td><td>3.1.81</td><td>Nov 26, 2022</td></tr>
 			</tbody>
 			</table>
 			<br/>
@@ -188,15 +188,6 @@ class PDFviewer
             'pdfviewer_configure_page',
             'pdfviewer_configure_section',
 			array( 'field' => 'tx_height', 'desc' => 'Viewer will use this height if not specified in the shortcode. Accept px or %.' )	
-        );
-		
-		add_settings_field(
-            'beta', // ID
-            'Beta version', // Title 
-            array( $this, 'checkbox_callback' ), // Callback
-            'pdfviewer_configure_page', // Page
-            'pdfviewer_configure_section', // Section	
-			array( 'field' => 'beta', 'label' => 'Check this to use beta version of PDFjs as default viewer' )
         );
 		
 		add_settings_field(
@@ -265,7 +256,7 @@ class PDFviewer
 		$width = $this->options['tx_width'];
 		$height = $this->options['tx_height'];
 		
-		echo '<p>Use <code>[pdfviewer width="'.$width.'" height="'.$height.'" beta="true/false"]http://full-url/document.pdf[/pdfviewer]</code> in post editor to embed the PDF Viewer.</p>';
+		echo '<p>Use <code>[pdfviewer width="'.$width.'" height="'.$height.'"]http://full-url/document.pdf[/pdfviewer]</code> in post editor to embed the PDF Viewer.</p>';
     }
 	
 	/** 
@@ -319,7 +310,7 @@ class PDFviewer
 			$height = $this->options['tx_height'];
 		?>
 		<script type="text/javascript">
-		QTags.addButton( 'pdfviewer', 'PDF Viewer', '[pdfviewer width="<?php echo $width; ?>" height="<?php echo $height; ?>" beta="true/false"]', '[/pdfviewer]' );
+		QTags.addButton( 'pdfviewer', 'PDF Viewer', '[pdfviewer width="<?php echo $width; ?>" height="<?php echo $height; ?>"]', '[/pdfviewer]' );
 		</script>
 		<?php
 		}
@@ -346,6 +337,7 @@ class PDFviewer
 	 * Add [pdfviewer] shortcode
 	 */
 	public function add_shortcode( $atts, $content = "" ) {
+		$content = esc_url($content);
 		if ( !empty($content) && filter_var($content, FILTER_VALIDATE_URL) ) {
 
 			//TODO: filter URL to check if PDF only
@@ -360,17 +352,15 @@ class PDFviewer
 				$atts = shortcode_atts(
 					array(
 						'width' => $this->options['tx_width'],
-						'height' => $this->options['tx_height'],
-						'beta' => empty($this->options['beta']) ? 0 : "true",
+						'height' => $this->options['tx_height']
 					), 
 					$atts,
 					'pdfviewer' 
 				);
 				
-				$pdfjs_mode = ( $atts['beta'] === "true" ) ? 'beta' : 'stable';
-				$pdfjs_url = plugin_dir_url( __FILE__ ).$pdfjs_mode.'/web/viewer.html?file='.$content;
+				$pdfjs_url = plugin_dir_url( __FILE__ ).'stable/web/viewer.html?file='.$content;
 				
-				$pdfjs_iframe = '<iframe class="pdfjs-viewer" width="'.$atts['width'].'" height="'.$atts['height'].'" src="'.$pdfjs_url.'"></iframe> ';
+				$pdfjs_iframe = '<iframe class="pdfjs-viewer" width="'.esc_attr($atts['width']).'" height="'.esc_attr($atts['height']).'" src="'.$pdfjs_url.'"></iframe> ';
 				
 				return $pdfjs_iframe;
 			}
