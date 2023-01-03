@@ -3,7 +3,7 @@
 Plugin Name: PDF Viewer
 Plugin URI: http://wordpress.org/plugins/pdf-viewer/
 Description: HTML5-compliant PDF Viewer
-Version: 1.0.1
+Version: 1.1.0
 Author: Envigeek Web Services
 Author URI: http://www.envigeek.com/
 Requires PHP: 7.0
@@ -29,7 +29,7 @@ add_action( 'plugins_loaded', array( 'PDFviewer', 'init' ) );
  
 class PDFviewer
 {
-	const VER = '1.0.1';
+	const VER = '1.1.0';
 
 	protected $options;
 	
@@ -145,7 +145,7 @@ class PDFviewer
 			<thead>
 			</thead>
 			<tbody>
-				<tr><td>Stable</td><td>3.1.81</td><td>Nov 26, 2022</td></tr>
+				<tr><td>Stable</td><td>3.2.146</td><td>Jan 02, 2023</td></tr>
 			</tbody>
 			</table>
 			<br/>

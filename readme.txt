@@ -31,6 +31,9 @@ In simple words, YES. But if you are using domain mapping plugin, this only work
 1. Settings page for default values.
 
 == Changelog ==
+= 1.1.0 =
+* Updated PDF.js to latest version 3.2.146
+
 = 1.0.1 =
 * Fixed PDF.js not loading correctly
 
@@ -43,4 +46,4 @@ In simple words, YES. But if you are using domain mapping plugin, this only work
 * Initial release.
 
 == Upgrade Notice ==
-* Latest PDF.js and security fix.
+= Updated PDF.js to latest version 3.2.146 =
